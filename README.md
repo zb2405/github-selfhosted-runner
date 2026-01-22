@@ -153,16 +153,16 @@ MAC_ADDRESS="BC:24:11:1A:E2:52"
 
 REPO_URL="https://github.com/<OWNER>/<REPOSITORY>"
 RUNNER_TOKEN="<RUNNER_REGISTRATION_TOKEN>"
+```
 
 ---
-
 ## Usage
 
 Run the script on the Proxmox host as root:
 
 ```bash
 chmod +x github-runner.sh
-./github-runner.sh
+./github-runner-proxmox.sh
 ```
 ## Verifying the installation
 
