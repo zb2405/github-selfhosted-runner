@@ -161,7 +161,7 @@ RUNNER_TOKEN="<RUNNER_REGISTRATION_TOKEN>"
 Run the script on the Proxmox host as root:
 
 ```bash
-chmod +x github-runner.sh
+chmod +x github-runner-proxmox.sh
 ./github-runner-proxmox.sh
 ```
 ## Verifying the installation
@@ -170,12 +170,6 @@ On the Proxmox host:
 
 ```bash
 pct exec <CTID> -- systemctl status actions.runner*
-```
-
-Inside the container:
-
-```bash
-docker run hello-world
 ```
 
 On GitHub:
