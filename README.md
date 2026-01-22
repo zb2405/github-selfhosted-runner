@@ -32,11 +32,85 @@ It is intended for **test, staging, or prod-like environments** where you want a
 
 ## Prerequisites
 
-### Proxmox host
-- Proxmox VE 8.x or newer
-- Internet access
-- Enough storage on the selected storage backend (default: `local-lvm`)
-- `pveam`, `pct` available (standard Proxmox install)
+### Proxmox host prerequisites
+
+Before running the script, verify the following on the **Proxmox host**.
+
+### Container ID (CTID)
+
+Ensure the CTID you plan to use is not already allocated:
+
+```bash
+pct list
+```
+
+If the ID is in use, update the `CTID` variable in the script.
+
+---
+
+## Network bridge
+
+The script attaches the container network interface to a Linux bridge on the Proxmox host.
+
+Default bridge:
+- `vmbr0`
+
+Verify the bridge exists:
+
+```bash
+ip link show vmbr0
+```
+
+Update the `BRIDGE` variable in the script if required.
+
+---
+
+## Storage backend
+
+The container root filesystem is created on a Proxmox storage backend.
+
+Default storage:
+- `local-lvm`
+
+Verify available storage backends:
+
+```bash
+pvesm status
+```
+
+Ensure sufficient free space is available.
+
+---
+
+## Required host packages
+
+Required (present on standard Proxmox installs):
+
+- `pct`
+- `pveam`
+- `bash`
+- `curl`
+
+Optional (useful for debugging):
+
+- `jq`
+- `iproute2`
+
+---
+
+## GitHub Actions runner documentation
+
+Official GitHub documentation for self-hosted runners:
+
+```
+https://docs.github.com/en/actions/concepts/runners/self-hosted-runners
+```
+
+This covers runner architecture, security boundaries, lifecycle management, and best practices.
+
+---
+
+
 
 ### GitHub
 - A repository where you have **admin access**
@@ -79,3 +153,72 @@ MAC_ADDRESS="BC:24:11:1A:E2:52"
 
 REPO_URL="https://github.com/<OWNER>/<REPOSITORY>"
 RUNNER_TOKEN="<RUNNER_REGISTRATION_TOKEN>"
+
+---
+
+## Usage
+
+Run the script on the Proxmox host as root:
+
+```bash
+chmod +x github-runner.sh
+./github-runner.sh
+```
+## Verifying the installation
+
+On the Proxmox host:
+
+```bash
+pct exec <CTID> -- systemctl status actions.runner*
+```
+
+Inside the container:
+
+```bash
+docker run hello-world
+```
+
+On GitHub:
+
+```
+Repository → Settings → Actions → Runners
+```
+
+The runner should appear as **Online** and **Idle**.
+
+---
+
+## Cleanup
+
+```bash
+pct stop <CTID>
+pct destroy <CTID>
+```
+
+Remove the runner from GitHub under:
+
+```
+Settings → Actions → Runners
+```
+
+---
+
+## Security considerations
+
+- Docker inside a privileged LXC has root-equivalent access
+- Treat this runner as trusted infrastructure
+- Do not run untrusted workflows on this runner
+
+---
+
+## Notes
+
+- Ubuntu 25.04 is not an LTS release
+- Ubuntu 22.04 LTS is recommended for long-term stability
+- The script favors clarity and debuggability over brevity
+
+---
+
+## License
+
+Internal use only.
