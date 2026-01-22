@@ -2,7 +2,7 @@
 
 This script provisions a **self-hosted GitHub Actions runner** inside a **Proxmox LXC container**, using **Ubuntu 25.04** and **Docker**.
 
-It is intended for **test, staging, or prod-like environments** where you want a runner that closely mirrors real infrastructure while still being lightweight.
+It is intended for **test or staging** where you want a runner that closely mirrors real infrastructure while still being lightweight.
 
 ---
 
